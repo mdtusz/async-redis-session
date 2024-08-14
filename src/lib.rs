@@ -136,7 +136,7 @@ impl SessionStore for RedisSessionStore {
 
             Some(expiry) => {
                 connection
-                    .set_ex(id, string, expiry.as_secs() as usize)
+                    .set_ex(id, string, expiry.as_secs())
                     .await?
             }
         };
@@ -270,7 +270,7 @@ mod tests {
     #[async_std::test]
     async fn destroying_a_single_session() -> Result {
         let store = test_store().await;
-        for _ in 0..3i8 {
+        for _ in 0..3 {
             store.store_session(Session::new()).await?;
         }
 
@@ -307,7 +307,7 @@ mod tests {
         let store = RedisSessionStore::new("redis://127.0.0.1")?.with_prefix("sessions/");
         store.clear_store().await?;
 
-        for _ in 0..3i8 {
+        for _ in 0..3 {
             store.store_session(Session::new()).await?;
         }
 
@@ -329,7 +329,7 @@ mod tests {
             RedisSessionStore::new("redis://127.0.0.1")?.with_prefix("other-namespace/");
 
         assert_eq!(0, other_store.count().await.unwrap());
-        for _ in 0..3i8 {
+        for _ in 0..3 {
             other_store.store_session(Session::new()).await?;
         }
 
