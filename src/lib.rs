@@ -26,7 +26,7 @@
 )]
 
 use async_session::{async_trait, serde_json, Result, Session, SessionStore};
-use redis::{aio::Connection, AsyncCommands, Client, IntoConnectionInfo, RedisResult};
+use redis::{aio::MultiplexedConnection, AsyncCommands, Client, IntoConnectionInfo, RedisResult};
 
 /// # RedisSessionStore
 #[derive(Clone, Debug)]
@@ -108,8 +108,8 @@ impl RedisSessionStore {
         }
     }
 
-    async fn connection(&self) -> RedisResult<Connection> {
-        self.client.get_async_std_connection().await
+    async fn connection(&self) -> RedisResult<MultiplexedConnection> {
+        self.client.get_multiplexed_async_std_connection().await
     }
 }
 
